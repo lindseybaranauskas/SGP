@@ -482,12 +482,14 @@ function renderHome() {
   const overCapacity = leaders.filter((leader) => getCapacityClass(leader.capacity_status) === "risk").length;
   const nearCapacity = leaders.filter((leader) => getCapacityClass(leader.capacity_status) === "warn").length;
 
-  const capacityWatch =
-    metrics.capacity_watch_count ??
-    metrics.capacityWatch ??
-    Number(metrics.optimized_over_capacity_count || 0) + Number(metrics.optimized_near_capacity_count || 0) ||
-    overCapacity + nearCapacity;
+const calculatedCapacityWatch =
+  Number(metrics.optimized_over_capacity_count || 0) +
+  Number(metrics.optimized_near_capacity_count || 0);
 
+const capacityWatch =
+  metrics.capacity_watch_count ??
+  metrics.capacityWatch ??
+  (calculatedCapacityWatch || overCapacity + nearCapacity);
   const cards = [
     {
       label: "Total Leaders",
