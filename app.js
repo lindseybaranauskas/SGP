@@ -79,6 +79,46 @@ function numberPick(obj, keys, fallback = 0) {
   return Number.isFinite(number) ? number : fallback;
 }
 
+function scenarioScore(scenario) {
+  return numberPick(scenario, ["total_score", "score", "optimized_score", "Optimized Score"], 0);
+}
+
+function scenarioBaselineScore(scenario) {
+  return numberPick(scenario, ["candidate_score", "baseline_score", "base_score", "Candidate Score"], 0);
+}
+
+function scenarioImprovementPct(scenario) {
+  const direct = pick(scenario, ["capacity_improvement_pct", "capacity_improvement", "percent_improvement"], null);
+  if (direct !== null && direct !== undefined) {
+    const n = Number(direct);
+    return Number.isFinite(n) ? n : null;
+  }
+  const candidate = scenarioBaselineScore(scenario);
+  const optimized = scenarioScore(scenario);
+  if (!candidate) return null;
+  return ((candidate - optimized) / candidate) * 100;
+}
+
+function scenarioReassignmentValue(scenario) {
+  return pick(scenario, ["reassignment_count", "reassignments", "violations", "Capacity Violations"], "--");
+}
+
+function scenarioStabilityRating(scenario) {
+  const direct = pick(scenario, ["stability_rating", "stability"], null);
+  if (direct) return direct;
+  const violations = Number(pick(scenario, ["violations", "Capacity Violations"], NaN));
+  if (!Number.isFinite(violations)) return "--";
+  if (violations <= 10) return "High";
+  if (violations <= 30) return "Medium";
+  return "Needs Review";
+}
+
+function displayOpportunityItem(opp) {
+  if (opp === null || opp === undefined) return "";
+  if (typeof opp === "string") return opp;
+  return pick(opp, ["opportunity_name", "Opportunity Name", "Facility ID", "entity", "name"], JSON.stringify(opp));
+}
+
 function normalizeLeaderRecord(leader) {
   const serviceMix = leader["Service Mix"] || leader.service_mix || {};
   const serviceLinesFromMix = serviceMix && typeof serviceMix === "object" && !Array.isArray(serviceMix) ? Object.keys(serviceMix) : [];
@@ -156,11 +196,13 @@ function cleanDashboardData() {
     .filter((opp) => !opp.service_line || VALID_SERVICE_LINES.has(opp.service_line));
 
   const nodes = toArray(dashboardData.networkNodesEdges.nodes).map((node) => {
-    if ((node.type || node.group) === "service_line") {
+    const rawType = node.type || node.group;
+    const normalizedType = rawType === "current" ? "facility" : rawType;
+    if (normalizedType === "service_line") {
       const normalizedLabel = normalizeServiceLine(node.label || node.id);
       return { ...node, label: normalizedLabel || node.label || node.id, type: "service_line" };
     }
-    return node;
+    return { ...node, type: normalizedType };
   }).filter((node) => {
     if ((node.type || node.group) !== "service_line") return true;
     return VALID_SERVICE_LINES.has(String(node.label || node.id));
@@ -286,11 +328,13 @@ function renderScenarios() {
   const selectedName = select.value;
   const selected = scenarios.find((scenario) => (scenario.scenario_name || scenario.name) === selectedName) || scenarios[0] || {};
 
+  const improvement = scenarioImprovementPct(selected);
+
   document.getElementById("scenarioCards").innerHTML = [
-    { label: "Scenario Score", value: formatNumber(selected.total_score ?? selected.score, 1), note: "Composite assignment score" },
-    { label: "Capacity Improvement", value: formatPercent(selected.capacity_improvement_pct ?? selected.capacity_improvement, 1), note: "Compared with baseline" },
-    { label: "Reassignments", value: selected.reassignment_count ?? selected.reassignments ?? "--", note: "Implementation disruption" },
-    { label: "Stability", value: selected.stability_rating || "--", note: "Sensitivity confidence" }
+    { label: "Candidate Score", value: formatNumber(scenarioBaselineScore(selected), 1), note: "Before local optimization" },
+    { label: "Optimized Score", value: formatNumber(scenarioScore(selected), 1), note: "Lower is better" },
+    { label: "Improvement", value: improvement === null ? "--" : formatPercent(improvement, 1), note: "Candidate to optimized" },
+    { label: "Capacity Violations", value: scenarioReassignmentValue(selected), note: "Constraint review count" }
   ].map(kpiCard).join("");
 
   renderSensitivityChart();
@@ -299,10 +343,10 @@ function renderScenarios() {
 
 function renderSensitivityChart() {
   const scenarios = dashboardData.sensitivityResults || [];
-  const maxScore = Math.max(...scenarios.map((item) => Number(item.total_score ?? item.score ?? 0)), 1);
+  const maxScore = Math.max(...scenarios.map((item) => scenarioScore(item)), 1);
   const html = scenarios.map((item, index) => {
     const label = item.scenario_name || item.name || `Scenario ${index + 1}`;
-    const score = Number(item.total_score ?? item.score ?? 0);
+    const score = scenarioScore(item);
     const width = Math.max(2, (score / maxScore) * 100);
     return `
       <div class="bar-row">
@@ -348,7 +392,11 @@ function renderLeaderDrilldown() {
     return;
   }
 
-  const opportunities = toArray(leader.assigned_opportunities).map((opp) => `<li>${opp}</li>`).join("") || `<li>No new opportunities assigned in selected output.</li>`;
+  const opportunities = toArray(leader.assigned_opportunities || leader["Assigned Opportunities"])
+    .map(displayOpportunityItem)
+    .filter(Boolean)
+    .map((opp) => `<li>${opp}</li>`)
+    .join("") || `<li>No new opportunities assigned in selected output.</li>`;
   const flags = toArray(leader.review_flags).map((flag) => `<li>${flag}</li>`).join("") || `<li>No review flags listed.</li>`;
 
   document.getElementById("leaderDetail").innerHTML = `
