@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Strategic Growth Planning Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">Strategic Growth Planning</p>
+        <h1>VP Assignment Optimization Dashboard</h1>
+        <p class="hero-copy">
+          Compare the current operational structure against model-generated optimized assignments that consider workload capacity,
+          geographic alignment, service-line fit, and implementation disruption.
+        </p>
+      </div>
+      <div class="hero-card">
+        <span class="status-pill" id="dataStatus">Loading model outputs</span>
+        <p class="small-label">Source of Truth</p>
+        <h2>Python / Colab Model</h2>
+        <p>Dashboard reads exported JSON files from the <code>data/</code> folder.</p>
+      </div>
+    </header>
+
+    <nav class="tabs" aria-label="Dashboard tabs">
+      <button class="tab-button active" data-tab="home">Home</button>
+      <button class="tab-button" data-tab="current">Current State</button>
+      <button class="tab-button" data-tab="scenarios">Scenarios</button>
+      <button class="tab-button" data-tab="leaders">Leader Drill-down</button>
+      <button class="tab-button" data-tab="network">Network</button>
+      <button class="tab-button" data-tab="progress">Progress Reports</button>
+    </nav>
+
+    <main>
+      <section id="home" class="tab-panel active">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Executive Overview</p>
+            <h2>Assignment Recommendation Summary</h2>
+          </div>
+          <p>The system architecture outlines how data, modeling logic, structured outputs, and dashboard components work together to support VP assignment optimization and executive scenario review.</p>
+        </div>
+        <div id="summaryCards" class="kpi-grid"></div>
+        <div class="two-column">
+          <article class="panel">
+            <h3>Recommended Focus</h3>
+            <p id="recommendationText">Loading recommendation from model output...</p>
+          </article>
+          <article class="panel">
+            <h3>Planning Workflow</h3>
+            <ol class="workflow-list">
+              <li>Raw facility and opportunity data</li>
+              <li>Colab cleaning and optimization model</li>
+              <li>JSON outputs exported to the repo</li>
+              <li>GitHub Pages dashboard renders executive views</li>
+            </ol>
+          </article>
+        </div>
+      </section>
+
+      <section id="current" class="tab-panel">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Baseline Review</p>
+            <h2>Current State</h2>
+          </div>
+          <p>Analyze the current state to quantify and map existing leader responsibilities, facility coverage, service-line alignment, and workload distribution.</p>
+        </div>
+        <div id="capacityCards" class="kpi-grid"></div>
+        <article class="panel">
+          <div class="panel-header">
+            <h3>Leader Workload Summary</h3>
+            <input id="leaderSearch" class="search-input" type="search" placeholder="Search leader or region..." />
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Leader</th>
+                  <th>Region</th>
+                  <th>Service Lines</th>
+                  <th>Baseline Workload</th>
+                  <th>Optimized Workload</th>
+                  <th>Capacity Status</th>
+                  <th>Facilities</th>
+                </tr>
+              </thead>
+              <tbody id="leaderTableBody"></tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+
+      <section id="scenarios" class="tab-panel">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Optimization Review</p>
+            <h2>Scenario Comparison</h2>
+          </div>
+          <p>Compare baseline and optimized states across weighting strategies for capacity, geography, service-line fit, and disruption.</p>
+        </div>
+        <div class="scenario-controls">
+          <label for="scenarioSelect">Scenario</label>
+          <select id="scenarioSelect"></select>
+        </div>
+        <div id="scenarioCards" class="kpi-grid"></div>
+        <div class="two-column">
+          <article class="panel">
+            <h3>Sensitivity Analysis</h3>
+            <div id="sensitivityChart" class="bar-chart"></div>
+          </article>
+          <article class="panel">
+            <h3>New Opportunity Assignments</h3>
+            <div class="table-wrap compact">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Opportunity</th>
+                    <th>Recommended VP</th>
+                    <th>Service Line</th>
+                    <th>Score</th>
+                  </tr>
+                </thead>
+                <tbody id="opportunityTableBody"></tbody>
+              </table>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="leaders" class="tab-panel">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Leader Impact</p>
+            <h2>Leader Drill-down</h2>
+          </div>
+          <p>Review how proposed assignments or reassignments impact individual VPs.</p>
+        </div>
+        <div class="scenario-controls">
+          <label for="leaderSelect">Leader</label>
+          <select id="leaderSelect"></select>
+        </div>
+        <div id="leaderDetail" class="leader-detail"></div>
+      </section>
+
+      <section id="network" class="tab-panel">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Relationships</p>
+            <h2>Network View</h2>
+          </div>
+          <p>Display relationships between leaders, facilities, opportunities, service lines, and strategic priorities. Service lines are limited to EVS and CNS.</p>
+        </div>
+        <div class="scenario-controls">
+          <label for="networkFilter">Filter</label>
+          <select id="networkFilter">
+            <option value="all">All Relationships</option>
+            <option value="leader">Leaders</option>
+            <option value="facility">Facilities</option>
+            <option value="opportunity">Opportunities</option>
+            <option value="service_line">Service Lines</option>
+          </select>
+        </div>
+        <div id="networkLegend" class="legend"></div>
+        <div id="networkList" class="network-list"></div>
+      </section>
+
+      <section id="progress" class="tab-panel">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Project Management</p>
+            <h2>Progress Reports</h2>
+          </div>
+          <p>Document project progress, assumptions, implementation decisions, current focus areas, and next steps.</p>
+        </div>
+        <div id="progressReports" class="progress-grid"></div>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
