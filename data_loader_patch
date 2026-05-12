@@ -1,0 +1,60 @@
+// dashboard_data_loader_patch.js
+// Use this pattern in app.js to load exported model outputs from the notebook.
+// The notebook should export these files into a /data folder in the GitHub Pages repo.
+
+const DATA_PATHS = {
+  summaryMetrics: "data/summary_metrics.json",
+  leaderWorkloadSummary: "data/leader_workload_summary.json",
+  leaderDrilldown: "data/leader_drilldown.json",
+  newOpportunities: "data/new_opportunities.json",
+  sensitivityResults: "data/sensitivity_results.json",
+  networkNodesEdges: "data/network_nodes_edges.json",
+  optimizedAssignments: "data/optimized_assignments.json"
+};
+
+let dashboardData = {
+  summaryMetrics: null,
+  leaderWorkloadSummary: [],
+  leaderDrilldown: [],
+  newOpportunities: [],
+  sensitivityResults: [],
+  networkNodesEdges: { nodes: [], edges: [] },
+  optimizedAssignments: []
+};
+
+async function loadJson(path, fallback) {
+  try {
+    const response = await fetch(path, { cache: "no-store" });
+
+    if (!response.ok) {
+      console.warn(`Could not load ${path}. Status: ${response.status}`);
+      return fallback;
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.warn(`Error loading ${path}:`, error);
+    return fallback;
+  }
+}
+
+async function loadDashboardData() {
+  dashboardData.summaryMetrics = await loadJson(DATA_PATHS.summaryMetrics, {});
+  dashboardData.leaderWorkloadSummary = await loadJson(DATA_PATHS.leaderWorkloadSummary, []);
+  dashboardData.leaderDrilldown = await loadJson(DATA_PATHS.leaderDrilldown, []);
+  dashboardData.newOpportunities = await loadJson(DATA_PATHS.newOpportunities, []);
+  dashboardData.sensitivityResults = await loadJson(DATA_PATHS.sensitivityResults, []);
+  dashboardData.networkNodesEdges = await loadJson(DATA_PATHS.networkNodesEdges, { nodes: [], edges: [] });
+  dashboardData.optimizedAssignments = await loadJson(DATA_PATHS.optimizedAssignments, []);
+
+  // Replace these with the render functions already in your app.js.
+  // The exact names may differ depending on the file you pasted into GitHub.
+  if (typeof renderHome === "function") renderHome();
+  if (typeof renderCurrentState === "function") renderCurrentState();
+  if (typeof renderScenarios === "function") renderScenarios();
+  if (typeof renderLeaderDrilldown === "function") renderLeaderDrilldown();
+  if (typeof renderNetwork === "function") renderNetwork();
+  if (typeof renderProgressReports === "function") renderProgressReports();
+}
+
+document.addEventListener("DOMContentLoaded", loadDashboardData);
