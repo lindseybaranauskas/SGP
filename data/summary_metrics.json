@@ -1,0 +1,28 @@
+{
+  "data_source": "python_notebook_export",
+  "is_sample_data": false,
+  "selected_scenario": "Balanced Growth",
+  "leader_count": 55,
+  "current_facility_count": 570,
+  "new_opportunity_count": 24,
+  "total_leaders": 55,
+  "total_facilities": 570,
+  "total_new_opportunities": 24,
+  "capacity_watch_count": 33,
+  "base_objective_score": 52.40689983902181,
+  "optimized_objective_score": 53.543631891426784,
+  "candidate_objective_score": 66.09930823173627,
+  "base_capacity_violations": 31,
+  "optimized_capacity_violations": 31,
+  "base_over_capacity_count": 31,
+  "optimized_over_capacity_count": 31,
+  "optimized_near_capacity_count": 2,
+  "reassignment_count": 0,
+  "candidate_to_optimized_change_count": 49,
+  "percent_improvement_vs_base": -2.169050365308139,
+  "valid_service_lines": [
+    "CNS",
+    "EVS"
+  ],
+  "service_line_note": "Service lines are limited to EVS and CNS. Hospital-type values are excluded from service-line views."
+}

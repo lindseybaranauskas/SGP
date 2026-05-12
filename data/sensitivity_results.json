@@ -1,0 +1,46 @@
+[
+  {
+    "scenario_name": "Balanced Growth",
+    "distance_weight": 0.4,
+    "complexity_weight": 0.6,
+    "sl_penalty": 0.2,
+    "reassignment_penalty": 0.3,
+    "overload_weight": 2.0,
+    "candidate_score": 151.54150931699408,
+    "optimized_score": 136.04763793172245,
+    "violations": 38
+  },
+  {
+    "scenario_name": "Geographic Efficiency",
+    "distance_weight": 0.6,
+    "complexity_weight": 0.4,
+    "sl_penalty": 0.2,
+    "reassignment_penalty": 0.3,
+    "overload_weight": 2.0,
+    "candidate_score": 151.58758610888805,
+    "optimized_score": 134.75460089339603,
+    "violations": 39
+  },
+  {
+    "scenario_name": "Service Line Fit",
+    "distance_weight": 0.5,
+    "complexity_weight": 0.5,
+    "sl_penalty": 0.4,
+    "reassignment_penalty": 0.3,
+    "overload_weight": 2.0,
+    "candidate_score": 151.90224352004205,
+    "optimized_score": 135.0658866042691,
+    "violations": 35
+  },
+  {
+    "scenario_name": "Minimize Disruption",
+    "distance_weight": 0.5,
+    "complexity_weight": 0.5,
+    "sl_penalty": 0.2,
+    "reassignment_penalty": 0.5,
+    "overload_weight": 2.0,
+    "candidate_score": 150.0808762356415,
+    "optimized_score": 135.88621346675075,
+    "violations": 34
+  }
+]

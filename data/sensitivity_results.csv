@@ -1,0 +1,5 @@
+scenario_name,distance_weight,complexity_weight,sl_penalty,reassignment_penalty,overload_weight,candidate_score,optimized_score,violations
+Balanced Growth,0.4,0.6,0.2,0.3,2.0,151.54150931699408,136.04763793172245,38
+Geographic Efficiency,0.6,0.4,0.2,0.3,2.0,151.58758610888805,134.75460089339603,39
+Service Line Fit,0.5,0.5,0.4,0.3,2.0,151.90224352004205,135.0658866042691,35
+Minimize Disruption,0.5,0.5,0.2,0.5,2.0,150.0808762356415,135.88621346675075,34
