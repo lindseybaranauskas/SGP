@@ -1,0 +1,5 @@
+[
+  { "entity": "Opportunity 01", "assigned_leader": "VP Charlie", "scenario": "Balanced Growth", "service_line": "CNS" },
+  { "entity": "Opportunity 02", "assigned_leader": "VP Delta", "scenario": "Balanced Growth", "service_line": "EVS" },
+  { "entity": "Opportunity 03", "assigned_leader": "VP Alpha", "scenario": "Balanced Growth", "service_line": "EVS" }
+]

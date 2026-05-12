@@ -1,0 +1,24 @@
+{
+  "nodes": [
+    { "id": "VP Alpha", "label": "VP Alpha", "type": "leader" },
+    { "id": "VP Bravo", "label": "VP Bravo", "type": "leader" },
+    { "id": "VP Charlie", "label": "VP Charlie", "type": "leader" },
+    { "id": "VP Delta", "label": "VP Delta", "type": "leader" },
+    { "id": "Facility A", "label": "Facility A", "type": "facility" },
+    { "id": "Facility B", "label": "Facility B", "type": "facility" },
+    { "id": "Opportunity 01", "label": "Opportunity 01", "type": "opportunity" },
+    { "id": "Opportunity 02", "label": "Opportunity 02", "type": "opportunity" },
+    { "id": "EVS", "label": "EVS", "type": "service_line" },
+    { "id": "CNS", "label": "CNS", "type": "service_line" }
+  ],
+  "edges": [
+    { "source": "VP Alpha", "target": "Facility A", "relationship": "owns" },
+    { "source": "VP Bravo", "target": "Facility B", "relationship": "owns" },
+    { "source": "VP Charlie", "target": "Opportunity 01", "relationship": "recommended" },
+    { "source": "VP Delta", "target": "Opportunity 02", "relationship": "recommended" },
+    { "source": "Facility A", "target": "EVS", "relationship": "service_line" },
+    { "source": "Facility B", "target": "CNS", "relationship": "service_line" },
+    { "source": "Opportunity 01", "target": "CNS", "relationship": "service_line" },
+    { "source": "Opportunity 02", "target": "EVS", "relationship": "service_line" }
+  ]
+}
